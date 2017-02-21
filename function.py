@@ -1,15 +1,24 @@
 from utils import *
 
-def eliminate(values):
-    """Eliminate values from peers of each box with a single value.
+values = {'H8': '123456789', 'I5': '1', 'I2': '123456789', 'D2': '123456789', 'D6': '2', 'A4': '123456789', 'G9': '123456789', 'F5': '123456789', 'B2': '123456789', 'I9': '123456789', 'H7': '123456789', 'H6': '3', 'G2': '123456789', 'A5': '2', 'E7': '123456789', 'B8': '123456789', 'F4': '7', 'A9': '123456789', 'A8': '123456789', 'E6': '123456789', 'F8': '123456789', 'F3': '6', 'H1': '8', 'C9': '123456789', 'B4': '3', 'A3': '3', 'A6': '123456789', 'I8': '123456789', 'B9': '1', 'B1': '9', 'A7': '6', 'I4': '123456789', 'G1': '123456789', 'H2': '123456789', 'D4': '1', 'C2': '123456789', 'H3': '123456789', 'C7': '4', 'D9': '123456789', 'D7': '9', 'B5': '123456789', 'C6': '6', 'I3': '5', 'C5': '123456789', 'G6': '9', 'F7': '2', 'G5': '123456789', 'H5': '123456789', 'C3': '1', 'F9': '123456789', 'E1': '7', 'I1': '123456789', 'E3': '123456789', 'D8': '123456789', 'D5': '123456789', 'D1': '123456789', 'B6': '5', 'H4': '2', 'G7': '5', 'A1': '123456789', 'C1': '123456789', 'F1': '123456789', 'E8': '123456789', 'C8': '123456789', 'E9': '8', 'E5': '123456789', 'F2': '123456789', 'H9': '9', 'G3': '2', 'G4': '6', 'B3': '123456789', 'A2': '123456789', 'E2': '123456789', 'I6': '123456789', 'I7': '3', 'G8': '123456789', 'F6': '8', 'E4': '123456789', 'C4': '8', 'D3': '8', 'B7': '123456789'} {'H8': '123456789', 'I5': '1', 'I2': '123456789', 'D2': '123456789', 'D6': '2', 'A4': '123456789', 'G9': '123456789', 'F5': '123456789', 'B2': '123456789', 'I9': '123456789', 'H7': '123456789', 'H6': '3', 'G2': '123456789', 'A5': '2', 'E7': '123456789', 'B8': '123456789', 'F4': '7', 'A9': '123456789', 'A8': '123456789', 'E6': '123456789', 'F8': '123456789', 'F3': '6', 'H1': '8', 'C9': '123456789', 'B4': '3', 'A3': '3', 'A6': '123456789', 'I8': '123456789', 'B9': '1', 'B1': '9', 'A7': '6', 'I4': '123456789', 'G1': '123456789', 'H2': '123456789', 'D4': '1', 'C2': '123456789', 'H3': '123456789', 'C7': '4', 'D9': '123456789', 'D7': '9', 'B5': '123456789', 'C6': '6', 'I3': '5', 'C5': '123456789', 'G6': '9', 'F7': '2', 'G5': '123456789', 'H5': '123456789', 'C3': '1', 'F9': '123456789', 'E1': '7', 'I1': '123456789', 'E3': '123456789', 'D8': '123456789', 'D5': '123456789', 'D1': '123456789', 'B6': '5', 'H4': '2', 'G7': '5', 'A1': '123456789', 'C1': '123456789', 'F1': '123456789', 'E8': '123456789', 'C8': '123456789', 'E9': '8', 'E5': '123456789', 'F2': '123456789', 'H9': '9', 'G3': '2', 'G4': '6', 'B3': '123456789', 'A2': '123456789', 'E2': '123456789', 'I6': '123456789', 'I7': '3', 'G8': '123456789', 'F6': '8', 'E4': '123456789', 'C4': '8', 'D3': '8', 'B7': '123456789'}
 
-    Go through all the boxes, and whenever there is a box with a single value,
-    eliminate this value from the set of values of all its peers.
 
-    Args:
-        values: Sudoku in dictionary form.
-    Returns:
-        Resulting Sudoku in dictionary form after eliminating values.
-    """
-    assignments = dict(zip(boxes, values))
-    return assignments
+def reduce_puzzle(values):
+    stalled = False
+    while not stalled:
+        # Check how many boxes have a determined value
+        solved_values_before = len([box for box in values.keys() if len(values[box]) == 1])
+
+        # Your code here: Use the Eliminate Strategy
+        eliminated_values = eliminate(values)
+        # Your code here: Use the Only Choice Strategy
+        only_choiced_values = only_choice(eliminated_values)
+
+        # Check how many boxes have a determined value, to compare
+        solved_values_after = len([box for box in only_choiced_values.keys() if len(only_choiced_values[box]) == 1])
+        # If no new values were added, stop the loop.
+        stalled = solved_values_before == solved_values_after
+        # Sanity check, return False if there is a box with zero available values:
+        if len([box for box in values.keys() if len(values[box]) == 0]):
+            print(False)
+    display(values)
